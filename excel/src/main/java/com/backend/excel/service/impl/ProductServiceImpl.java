@@ -19,7 +19,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    // 🔹 Excel import (Excel → DB)
     @Override
     public void importExcel(MultipartFile file) throws IOException {
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
@@ -44,7 +43,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    // 🔹 Excel export (DB → Excel)
     @Override
     public ByteArrayInputStream exportExcel() {
         String[] columns = {"Name", "Price", "Quantity"};
@@ -73,20 +71,17 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    // 🔹 Yeni məhsul əlavə (JSON → DB)
     @Override
     public void save(Product product) {
         productRepository.save(product);
         saveExcelToFile(); // hər yeni məhsulda Excel faylı avtomatik yenilənir
     }
 
-    // 🔹 Bütün məhsulları DB-dən götür
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    // 🔹 Excel faylını diskə saxlayır
     private void saveExcelToFile() {
         try (FileOutputStream fos = new FileOutputStream("products.xlsx")) {
             fos.write(exportExcel().readAllBytes());
@@ -96,7 +91,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    // 🔹 Boş hüceyrələr üçün təhlükəsiz oxuma metodları
     private String getStringValue(Cell cell) {
         return (cell == null) ? "" : cell.getStringCellValue().trim();
     }
